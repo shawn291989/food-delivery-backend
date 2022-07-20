@@ -17,14 +17,6 @@ import { UserModule } from './purchase/user/user.module';
       validationSchema: configValidationSchema,
     }),
     TypeOrmModule.forRootAsync({
-
-      // type: 'postgres',
-      // host: 'localhost',
-      // port: 5432,
-      // username: 'postgres',
-      // password: '1234',
-      // database: 'Restaurents',
-      // autoLoadEntities: true
       imports: [SharedModule],
       inject: [ApiConfigService],
       useFactory: async (configService: ApiConfigService) =>

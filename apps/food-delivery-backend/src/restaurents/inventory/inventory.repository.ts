@@ -1,5 +1,5 @@
 import { EntityRepository, Repository, getConnection, getRepository } from 'typeorm';
-import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
 import { DishInventory } from '../entities/dish-inventory.entity';
 
 @EntityRepository(DishInventory)

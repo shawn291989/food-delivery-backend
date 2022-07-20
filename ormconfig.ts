@@ -9,15 +9,9 @@ const configs: TypeOrmModuleOptions =
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
-  // entities: ['src/**/*.entity{.ts,.js}'],
-
-  //entities: [__dirname + '/../food-delivery-backend/src/**/*.entity{.ts,.js}'],
   entities: ['apps/food-delivery-backend/src/**/*.entity{.ts,.js}'],
-  // entities: ['apps/dist/src/entity/*{.js,.ts}'],
   migrations: ['apps/database/migrations/*{.ts,.js}'],
-  //seeds: ['apps/database/seeds/**/*{.ts,.js}'],
-  //factories: ['apps/database/factories/**/*{.ts,.js}'],
-  synchronize: true,
+  //synchronize: true,
 };
 
 module.exports = configs;

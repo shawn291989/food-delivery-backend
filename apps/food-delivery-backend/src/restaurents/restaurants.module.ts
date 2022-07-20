@@ -13,8 +13,8 @@ import { InventoryRepository } from './inventory/inventory.repository';
   imports: [
     TypeOrmModule.forFeature([
       RestaurantRepository,
-      MenuRepository,
-      InventoryRepository
+      // MenuRepository,
+      // InventoryRepository
     ]),
   ],
   controllers: [RestaurantController],

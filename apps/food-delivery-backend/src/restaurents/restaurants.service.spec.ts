@@ -36,6 +36,7 @@ describe('RestaurantService', () => {
       providers: [
         RestaurantService,
         { provide: RestaurantRepository, useFactory: mockRestaurantRepository },
+        //{ provide: getModelToken(Cat.name), useValue: jest.fn() }
       ],
 
     }).compile();
@@ -59,5 +60,10 @@ describe('RestaurantService', () => {
   it('calls to get Restaurants from Restaurant Repository and handle error', async () => {
     restaurantRepository.getRestaurants.mockResolvedValue(mockErrorRestaurantData);
     expect(restaurantService.getRestaurants(mockRestaurantDto)).rejects.toThrow(NotFoundException);
+  });
+
+  it('wibb be passed', async () => {
+    const result = true;
+    expect(true).toEqual(true);
   });
 });
