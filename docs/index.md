@@ -45,9 +45,7 @@ DB_DATABASE=DATABASENAME
 
 ![image](https://drive.google.com/uc?export=view&id=1eq7QTBo-r5tntF4Vff3eY0DQJkg4ahEQ)
 
-```markdown
-<a href="https://drive.google.com/uc?export=view&id=1eq7QTBo-r5tntF4Vff3eY0DQJkg4ahEQ"><img src="https://drive.google.com/uc?export=view&id=1eq7QTBo-r5tntF4Vff3eY0DQJkg4ahEQ" style="width: 650px; max-width: 100%; height: auto" title="Click to enlarge picture" />
-```
+<a href="https://drive.google.com/uc?export=view&id=1eq7QTBo-r5tntF4Vff3eY0DQJkg4ahEQ"><img src="https://drive.google.com/uc?export=view&id=1eq7QTBo-r5tntF4Vff3eY0DQJkg4ahEQ" style="width: 500px; max-width: 100%; height: auto" title="Click for the larger version." /></a>
 
 # API Implementation Guideline
 
