@@ -24,6 +24,7 @@ To run the application,
 ```markdown
 yarn start dev
 ```
+
 To establish database connectivity a dotenv (.env) file needs to be created at the root directory of the application folder.
 
 Here are the credentials to put on .env file:
