@@ -5,6 +5,9 @@
   "root": "apps/food-delivery-backend",
   "compilerOptions": {
     "webpack": true,
+    "plugins": [
+      "@nestjs/swagger"
+    ],
     "tsConfigPath": "apps/food-delivery-backend/tsconfig.app.json"
   },
   "projects": {
@@ -14,6 +17,9 @@
       "entryFile": "main",
       "sourceRoot": "apps/food-delivery-backend/src",
       "compilerOptions": {
+        "plugins": [
+          "@nestjs/swagger"
+        ],
         "tsConfigPath": "apps/food-delivery-backend/tsconfig.app.json"
       }
     }
