@@ -41,6 +41,8 @@ DB_PASSWORD=PASSWORD
 DB_DATABASE=DATABASENAME
 ```
  
+# Schema Design - Entity Relational Diagram
+![image](https://drive.google.com/uc?export=view&id=1eq7QTBo-r5tntF4Vff3eY0DQJkg4ahEQ)
 
 # API Implementation Guideline
 ### - 1st Task,
@@ -288,11 +290,6 @@ HTTP status code: 404
 }
 ```
 - Note: API performance may vary because of HEROKU server downtime
-
- 
-
-# Schema Design - Entity Relational Diagram
-![Image](https://drive.google.com/uc?export=view&id=1eq7QTBo-r5tntF4Vff3eY0DQJkg4ahEQ)
  
 
 # Populate Data Into Database
