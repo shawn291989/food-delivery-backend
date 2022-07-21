@@ -42,11 +42,16 @@ DB_DATABASE=DATABASENAME
 ```
  
 # Schema Design - Entity Relational Diagram
+```markdown
 ![image](https://drive.google.com/uc?export=view&id=1eq7QTBo-r5tntF4Vff3eY0DQJkg4ahEQ)
+```
+
+<a href="https://drive.google.com/uc?export=view&id=1eq7QTBo-r5tntF4Vff3eY0DQJkg4ahEQ"><img src="https://drive.google.com/uc?export=view&id=1eq7QTBo-r5tntF4Vff3eY0DQJkg4ahEQ" style="width: 650px; max-width: 100%; height: auto" title="Click to enlarge picture" />
 
 # API Implementation Guideline
+
 ### - 1st Task,
-###List all restaurants that are open at a certain DateTime
+List all restaurants that are open at a certain DateTime
 
 ### Get Restaurants API Behavior:
 A GET request should be made with DateTime in 2022-07-27 11:30:00 this formate. The API will return an array of the restaurants that are open at the given DateTime. 
