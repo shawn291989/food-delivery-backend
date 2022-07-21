@@ -22,7 +22,7 @@ async function bootstrap() {
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, swaggerConfig);
-  //fs.writeFileSync('./swagger-spec.json', JSON.stringify(document));
+  fs.writeFileSync('./swagger-spec.json', JSON.stringify(document));
   SwaggerModule.setup('/api', app, document);
 
   app.useGlobalPipes(new ValidationPipe());
