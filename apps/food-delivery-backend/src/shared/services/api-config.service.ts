@@ -26,10 +26,10 @@ export class ApiConfigService {
     const migrations = [__dirname + '/../database/migrations/*{.ts,.js}'];
     const isProduction = this.configService.get('STAGE') === 'prod';
     return {
-      // ssl: isProduction,
-      // extra: {
-      //   ssl: isProduction ? { rejectUnauthorized: false } : null,
-      // },
+      ssl: isProduction,
+      extra: {
+        ssl: isProduction ? { rejectUnauthorized: false } : null,
+      },
       entities,
       migrations,
       type: 'postgres',
@@ -39,7 +39,7 @@ export class ApiConfigService {
       database: this.configService.get('DB_DATABASE'),
       port: this.configService.get('DB_PORT'),
       autoLoadEntities: true,
-      synchronize: true,
+      // synchronize: true,
     };
   }
 }
