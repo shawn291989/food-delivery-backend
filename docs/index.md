@@ -44,7 +44,7 @@ DB_DATABASE=DATABASENAME
  
 # Schema Design - Entity Relational Diagram
 
-![image](https://drive.google.com/uc?export=view&id=1eq7QTBo-r5tntF4Vff3eY0DQJkg4ahEQ)
+[Click here to view Database Entity relational Diagram](https://drive.google.com/file/d/1eq7QTBo-r5tntF4Vff3eY0DQJkg4ahEQ/view)
 
 # API Implementation Guideline
 
