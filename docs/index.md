@@ -46,24 +46,27 @@ The APIs will cover below features:
 3. Search for restaurants or dishes by name, ranked by relevance to search term
 4. Process a user purchasing a dish from a restaurant, handling all relevant data changes in an atomic transaction. Do watch out for potential race conditions that can arise from concurrent transactions!
 
-Set up Guideline for Application
+### Set up Guideline for Application
 To install required packages, from the terminal, run
 
-
+```markdown
 yarn install
+```
 To run database migration,
 
-
+```markdown
 yarn run typeorm migration:run
+```
 To run the application,
 
-
+```markdown
 yarn start dev
+```
 To establish database connectivity a dotenv (.env) file needs to be created at the root directory of the application folder.
 
 Here are the credentials to put on .env file:
 
-
+```markdown
 ENV=development
 PORT=3000
 REQUEST_LIMIT=100kb
@@ -74,39 +77,40 @@ DB_PORT=5432
 DB_USERNAME=USERNAME
 DB_PASSWORD=PASSWORD
 DB_DATABASE=DATABASENAME
-
+```
  
 
-API Implementation Guideline
-1st Task,
-List all restaurants that are open at a certain DateTime
+# API Implementation Guideline
+### - 1st Task,
+###List all restaurants that are open at a certain DateTime
 
-API Behavior:
+### Get Restaurants API Behavior:
 A GET request should be made with DateTime in 2022-07-27 11:30:00 this formate. The API will return an array of the restaurants that are open at the given DateTime. 
 
 API URL: 
 
-
+```markdown
 https://buying-frenzy-food-delivery.herokuapp.com/api/v1/restaurants?dateTime=
+```
 Method: GET
 
 Postman cURL: 
 
-
+```markdown
 curl --location --request GET 'https://buying-frenzy-food-delivery.herokuapp.com/api/v1/restaurants?dateTime=2022-07-27 11:30:00&qRestaurantName=&qDishName=' \
 --data-raw ''
- 
+``` 
 
 Sample Request:
 
-
+```markdown
 https://buying-frenzy-food-delivery.herokuapp.com/api/v1/restaurants?dateTime=2022-07-27 11:30:00
- 
+```
 
 Sample Success Response:
 
 HTTP status code: 200
-
+```markdown
 {
     "RestaurantName": [
         "Ulu Ocean Grill and Sushi Lounge",
@@ -114,12 +118,12 @@ HTTP status code: 200
         "024 Grille"
     ]
 }
- 
+``` 
 
 Sample Error Responses:
 
 HTTP status code: 400
-
+```markdown
 {
     "statusCode": 400,
     "message": [
@@ -127,21 +131,21 @@ HTTP status code: 400
     ],
     "error": "Bad Request"
 }
- 
+``` 
 
 HTTP status code: 404
-
+```markdown
 {
     "statusCode": 404,
     "message": "No Restaurent found",
     "error": "Not Found"
 }
- 
+``` 
 
-2nd Task,
+### - 2nd Task,
 2. List top y restaurants that have more or less than x number of dishes within a price range, ranked alphabetically. More or less (than x) is a parameter that the API allows the consumer to enter.
 
-API Behavior:
+### List Top Restaurants API Behavior:
 A GET request should be made with the parameters named, dishesHaveMoreThan , dishesHaveLessThan, lowerPrice & topPrice as the query strings. 
 
 In lowerPrice & topPrice there needs to put a price range, eg,lowerPrice=5&topPrice=30 dishesHaveMoreThan="highest number of dishes available with the price range should return as result” & dishesHaveLessThan="lowest number of dishes available with the price range should return as result” eg. disheshHaveMoreThan=20&dishesHaveLessThan=5
@@ -150,98 +154,99 @@ So, API will return a list of restaurants with more or less than x number of dis
 
 API URL: 
 
-
+```markdown
 https://buying-frenzy-food-delivery.herokuapp.com/api/v1/top-restaurants?dishesHaveMoreThan=&dishesHaveLessThan=&lowerPrice=&topPrice=
- 
+``` 
 
 Method: GET
 
 Postman cURL: 
 
-
+```markdown
 curl --location --request GET 'https://buying-frenzy-food-delivery.herokuapp.com/api/v1/top-restaurants?dishesHaveMoreThan=1&dishesHaveLessThan=40&lowerPrice=1&topPrice=50' \
 --data-raw ''
- 
+``` 
 
 Sample Request:
 
-
+```markdown
 https://buying-frenzy-food-delivery.herokuapp.com/api/v1/top-restaurants?dishesHaveMoreThan=1&dishesHaveLessThan=40&lowerPrice=1&topPrice=50
- 
+``` 
 
 Sample Success Response:
 
 HTTP status code: 200
-
+```markdown
 {
     "RestaurantName": [
         "1515 Restaurant"
     ]
 }
- 
+``` 
 
 Sample Error Response:
 
 HTTP status code: 404
-
+```markdown
 {
     "statusCode": 404,
     "message": "No Restaurent is found !!!",
     "error": "Not Found"
 }
- 
+```
 
-3rd Task
+### - 3rd Task
 3. Search for restaurants or dishes by name, ranked by relevance to search term
 
-API Behavior:
+### Search Restaurants API Behavior:
 A GET request should be made with the parameters, qRestaurantName & qDishNameThe API will return a list of restaurants by restaurant name & dish name. , ranked by relevance to search term
 
 API URL: 
 
-
+```markdown
 https://buying-frenzy-food-delivery.herokuapp.com/api/v1/restaurants?qRestaurantName=&qDishName=
+```
 Method: GET
 
 Postman cURL: 
 
-
+```markdown
 curl --location --request GET 'https://buying-frenzy-food-delivery.herokuapp.com/api/v1/restaurants?qRestaurantName=1515 Restaurant&qDishName=Oysters' \
 --data-raw ''
- 
+``` 
 
 Sample Request:
 
-
+```markdown
 https://buying-frenzy-food-delivery.herokuapp.com/api/v1/restaurants?qRestaurantName=1515 Restaurant&qDishName=Oysters
- 
+```
 
 Sample Success Response:
 
 HTTP status code: 200
-
+```markdown
 {
     "RestaurantName": [
         "1515 Restaurant"
     ]
 }
- 
+``` 
 
 Sample Error Response:
 
 HTTP status code: 404
-
+```markdown
 {
     "statusCode": 404,
     "message": "No Restaurent is found !!!",
     "error": "Not Found"
 }
- 
+``` 
 
-4th Task
+### - 4th Task
 4. Process a user purchasing a dish from a restaurant, handling all relevant data changes in an atomic transaction. Do watch out for potential race conditions that can arise from concurrent transactions!
 
-API Behavior:
+### Purchase API Behavior:
 To make a purchase a POST request should be made with the below parameters in the API request body:
 
 ‘name' which is the name of the user/customer. 'dishName' which dish is to be purchased. 'restaurantName’ from which restaurant user is willing to purchase. 'transactionAmount' amount needs to purchase the dish item.
@@ -252,13 +257,14 @@ Before proceeding to purchase, a user needs to be registered with the cash balan
 
 API URL: 
 
-
+```markdown
 https://buying-frenzy-food-delivery.herokuapp.com/api/v1/purchase
+```
 Method: POST
 
 Postman cURL: 
 
-
+```markdown
 curl --location --request POST 'https://buying-frenzy-food-delivery.herokuapp.com/api/v1/purchase' \
 --header 'Content-Type: application/json' \
 --data-raw '{
@@ -267,12 +273,12 @@ curl --location --request POST 'https://buying-frenzy-food-delivery.herokuapp.co
     "restaurantName": "1515 Restaurant",
     "transactionAmount": 10.25
 }'
- 
+```
 
 Sample Success Response:
 
 HTTP status code: 200
-
+```markdown
 {
     "userName": "Edith Johnson",
     "dishName": "Watercress",
@@ -283,74 +289,79 @@ HTTP status code: 200
     "restaurantCashBalance": 4852.05,
     "transactionDate": "2022-07-17T03:02:04.075Z"
 }
- 
+``` 
 
 Sample Error Responses:
 
 HTTP status code: 404
-
+```markdown
 {
     "statusCode": 404,
     "message": "Dish name, Watercres, is invalid !!!",
     "error": "Not Found"
 }
+```
 HTTP status code: 400
-
+```markdown
 {
     "statusCode": 400,
     "message": "The price of this item is, 10.25 please provide the amount instead of 10.28",
     "error": "Bad Request"
 }
+```
 HTTP status code: 404
-
+```markdown
 {
     "statusCode": 404,
     "message": "Restaurant name, 1515 Resturant, is invalid !!!",
     "error": "Not Found"
 }
+```
 HTTP status code: 404
-
+```markdown
 {
     "statusCode": 404,
     "message": "User, Edith Jonson, is not registered !!!",
     "error": "Not Found"
 }
- 
-
-Note: API performance may vary because of HEROKU server downtime
-
- 
-
-Schema Design - Entity Relational Diagram
+```
+- Note: API performance may vary because of HEROKU server downtime
 
  
 
-Guidelines On Data Populate Into Database
+# Schema Design - Entity Relational Diagram
+[Image](src=https://drive.google.com/file/d/1eq7QTBo-r5tntF4Vff3eY0DQJkg4ahEQ/view?usp=sharing)
  
 
-API to insert Restaurant information:
-API Behavior:
+# Populate Data Into Database
+ 
+
+### API to insert Restaurant information:
+
+### Insert Restaurants - API Behavior:
 A POST request with relevant restaurant information will populate data into the restaurant table and returns the restaurant ID with other relevant information. This restaurant ID will be used to call other APIs later.
 
 API URL: 
 
-
+```markdown
 https://buying-frenzy-food-delivery.herokuapp.com/api/v1/restaurants
+```
 Method: POST
 
 Postman cURL: 
 
-
+```markdown
 curl --location --request POST 'https://buying-frenzy-food-delivery.herokuapp.com/api/v1/restaurants' \
 --header 'Content-Type: application/json' \
 --data-raw '{
     "restaurantName": "1515 Restaurant",
     "cashBalance": 4841.8
 }'
+```
 Sample Success Response:
 
 HTTP status code: 200
-
+```markdown
 {
     "cashBalance": 4841.8,
     "restaurantName": "1515 Restaurant",
@@ -359,12 +370,12 @@ HTTP status code: 200
     "id": "be124482-189d-4f2b-a16e-a8fd24d477c3",
     "created": "2022-07-17T02:29:17.495Z"
 }
- 
+```
 
 Sample Error Responses:
 
 HTTP status code: 400
-
+```markdown
 {
     "statusCode": 400,
     "message": [
@@ -372,23 +383,21 @@ HTTP status code: 400
     ],
     "error": "Bad Request"
 }
- 
+```
 
-API to insert Menu information:
-API Behavior:
+### API to insert Menu information:
+
+### Insert Menu - API Behavior:
 A POST request with a previously created restaurant ID in query string should be made with relevant information as an array in the API request body, Please see the sample request below, The API request will populate menu information into the menu table, mapped with restaurant table by restaurant ID. After a successful insert operation, the API will return updated data as a success response.
 
 Multiple requests with the same value will perform as upsert.
 
- 
-
 API URL: 
-
-
+```markdown
 https://buying-frenzy-food-delivery.herokuapp.com/api/v1/menu?restaurantId=
+```
 Request in the body:
-
-
+```markdown
 {
 	"menus": [{
                 "dishName": "Watercress",
@@ -412,13 +421,13 @@ Request in the body:
             }
     ]
 }
- 
+``` 
 
 Method: POST
 
 Postman cURL: 
 
-
+```markdown
 curl --location --request POST 'https://buying-frenzy-food-delivery.herokuapp.com/api/v1/menu?restaurantId=be124482-189d-4f2b-a16e-a8fd24d477c3' \
 --header 'Content-Type: application/json' \
 --data-raw '{
@@ -439,10 +448,11 @@ curl --location --request POST 'https://buying-frenzy-food-delivery.herokuapp.co
             }
     ]
 }'
+```
 Sample Success Response:
 
 HTTP status code: 200
-
+```markdown
 {
     "restaurantId": "be124482-189d-4f2b-a16e-a8fd24d477c3",
     "menus": [
@@ -472,34 +482,32 @@ HTTP status code: 200
         }
     ]
 }
- 
+``` 
 
 Sample Error Responses:
 
 HTTP status code: 400
-
+```markdown
 {
     "statusCode": 400,
     "message": "The value passed as UUID is not a string",
     "error": "Bad Request"
 }
- 
+``` 
 
-API to insert Restaurant Opening Hours information:
-API Behavior:
+### API to insert Restaurant Opening Hours information:
+
+### Insert Schedule - API Behavior:
 A POST request with a previously created restaurant ID in query string should be made with relevant information as an array in the API request body, Please see the sample request below, The API request will populate opening timing information into the openingHours table, mapped with restaurant table by restaurant ID. After a successful insert operation, the API will return updated data as a success response. 
 
 Multiple requests with the same value will perform as upsert.
 
- 
-
 API URL: 
-
-
+```markdown
 https://buying-frenzy-food-delivery.herokuapp.com/api/v1/opening-hours?restaurantId=
+```
 Request in the body:
-
-
+```markdown
 {
     "openingHours":[
         {
@@ -514,11 +522,12 @@ Request in the body:
         }
     ]
 }
+```
 Method: POST
 
 Postman cURL: 
 
-
+```markdown
 curl --location --request POST 'https://buying-frenzy-food-delivery.herokuapp.com/api/v1/opening-hours?restaurantId=be124482-189d-4f2b-a16e-a8fd24d477c3' \
 --header 'Content-Type: application/json' \
 --data-raw '{
@@ -540,10 +549,11 @@ curl --location --request POST 'https://buying-frenzy-food-delivery.herokuapp.co
         }
     ]
 }'
+```
 Sample Success Response:
 
 HTTP status code: 200
-
+```markdown
 {
     "restaurantId": "be124482-189d-4f2b-a16e-a8fd24d477c3",
     "openingHours": [
@@ -567,51 +577,54 @@ HTTP status code: 200
         }
     ]
 }
- 
+``` 
 
 Sample Error Responses:
 
 HTTP status code: 400
-
+```markdown
 {
     "statusCode": 400,
     "message": "The value passed as UUID is not a string",
     "error": "Bad Request"
 }
-API to insert User information:
-API Behavior:
+```
+### API to insert User information:
+
+### Register/Insert User/Customer - API Behavior:
 A POST request with the ‘user name' and 'cash balance’ in the request body will insert the user’s data into the user table. After a successful insert operation, the API will return updated data as a success response. 
 
-Multiple requests with the same value will perform as upsert.
-
- 
+Multiple requests with the same value will perform as upsert. 
 
 API URL: 
 
-
+```markdown
 https://buying-frenzy-food-delivery.herokuapp.com/api/v1/user
+```
 Sample Request in the body:
 
-
+```markdown
 {
     "name": "Edith Johnson",
     "cashBalance": 700.7
 }
+```
 Method: POST
 
 Postman cURL: 
 
-
+```markdown
 curl --location --request POST 'https://buying-frenzy-food-delivery.herokuapp.com/api/v1/user' \
 --header 'Content-Type: application/json' \
 --data-raw '{
     "name": "Edith Johnson",
     "cashBalance": 700.7
 }'
+```
 Sample Success Response:
 
 HTTP status code: 200
-
+```markdown
 {
     "name": "Edith Johnson",
     "cashBalance": 700.7,
@@ -619,10 +632,11 @@ HTTP status code: 200
     "deletedAt": null,
     "id": "5790be49-f382-44d6-b819-4aaa3c2ae819"
 }
+```
 Sample Error Responses:
 
 HTTP status code: 400
-
+```markdown
 {
     "statusCode": 400,
     "message": [
@@ -630,33 +644,35 @@ HTTP status code: 400
     ],
     "error": "Bad Request"
 }
-API to remove User information:
-API Behavior:
+```
+### API to remove User information:
+
+### Remove Registered User - API Behavior:
 A DELETE request with the ‘userID'  will remove (Soft Delete) the user’s data into the user table.
 
 API URL: 
-
-
+```markdown
 https://buying-frenzy-food-delivery.herokuapp.com/api/v1/user?userId=
+```
 Method: DELETE
 
 Postman cURL: 
 
-
+```markdown
 curl --location --request DELETE 'https://buying-frenzy-food-delivery.herokuapp.com/api/v1/user?userId=8f758a23-42ce-437e-b829-3a0fc525c725'
- 
+```
 
 Sample Success Response:
 
 HTTP status code: 200
  
-
 Sample Error Responses:
 
 HTTP status code: 400
-
+```markdown
 {
     "statusCode": 400,
     "message": "UserId can not be empty !!!",
     "error": "Bad Request"
 }
+```
