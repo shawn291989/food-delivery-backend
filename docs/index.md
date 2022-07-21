@@ -292,7 +292,7 @@ HTTP status code: 404
  
 
 # Schema Design - Entity Relational Diagram
-[Image](src=https://drive.google.com/file/d/1eq7QTBo-r5tntF4Vff3eY0DQJkg4ahEQ/view?usp=sharing)
+[Image](https://drive.google.com/file/d/1eq7QTBo-r5tntF4Vff3eY0DQJkg4ahEQ/view?usp=sharing)
  
 
 # Populate Data Into Database
