@@ -13,7 +13,7 @@ async function bootstrap() {
   });
   app.setGlobalPrefix('api');
 
-  const config = new DocumentBuilder()
+  const swaggerConfig = new DocumentBuilder()
     .setTitle('Food Delivery Banckend')
     .setDescription(
       'Api contains food delivery features',
@@ -21,8 +21,8 @@ async function bootstrap() {
     .addBearerAuth()
     .setVersion('1.0')
     .build();
-  const document = SwaggerModule.createDocument(app, config);
-  fs.writeFileSync('./swagger-spec.json', JSON.stringify(document));
+  const document = SwaggerModule.createDocument(app, swaggerConfig);
+  //fs.writeFileSync('./swagger-spec.json', JSON.stringify(document));
   SwaggerModule.setup('/api', app, document);
 
   app.useGlobalPipes(new ValidationPipe());
