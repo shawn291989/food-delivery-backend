@@ -1,17 +1,8 @@
-import { IsDate, IsDateString, IsEnum, IsOptional, IsString } from 'class-validator';
+import { IsDateString, IsOptional, IsString } from 'class-validator';
 
 import { ApiProperty } from '@nestjs/swagger';
 
-export class RestaurantDto {
-
-  @ApiProperty({
-    type: String,
-    description: 'Value of day must be a valid weekday!',
-  })
-  @IsOptional()
-  @IsString()
-  day?: string;
-
+export class RestaurantsDto {
   @ApiProperty({
     type: String,
     example: "2022-07-01 12:30:00",
@@ -21,15 +12,10 @@ export class RestaurantDto {
   @IsDateString()
   dateTime?: string;
 
-  @ApiProperty({
-    type: String,
-    description: 'Time to check restaurant is open or not',
-  })
-  @IsOptional()
-  @IsString()
-  time?: string;
 
   @ApiProperty({
+    type: String,
+    example: 'restaurant name',
     description: 'Search term for Restaurant name',
   })
   @IsOptional()
@@ -37,6 +23,8 @@ export class RestaurantDto {
   qRestaurantName?: string;
 
   @ApiProperty({
+    type: String,
+    example: 'dish name',
     description: 'Search term for Dishes name',
   })
   @IsOptional()

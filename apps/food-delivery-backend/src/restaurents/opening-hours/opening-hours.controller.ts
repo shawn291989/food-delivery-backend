@@ -2,14 +2,15 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseUUIDPipe
 import { OpeningHoursService } from './opening-hours.service';
 import { CreateOpeningHoursDto } from './dto/create-opening-hour.dto'
 
-import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { OpeningHours } from './entities/openingHours.entity';
-@ApiTags('opening-hours')
+@ApiTags('Set Schedule/Opening Hours')
 @Controller({ path: 'opening-hours', version: '1' })
 export class OpeningHoursController {
   constructor(private readonly openingHoursService: OpeningHoursService) { }
 
   @Post()
+  @ApiOperation({ description: 'This API performs to populate Restaurant schedule into database' })
   @ApiCreatedResponse({
     description: 'The record has been successfully created.',
     type: CreateOpeningHoursDto,

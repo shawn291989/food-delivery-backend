@@ -1,7 +1,7 @@
 
 import { ApiProperty } from '@nestjs/swagger';
 
-export class PurchaseDto {
+export class CreatePurchaseDto {
 
   @ApiProperty({
     type: String,
@@ -30,14 +30,4 @@ export class PurchaseDto {
     description: 'The transection amount',
   })
   transactionAmount: number;
-
-  @ApiProperty({
-    description: 'Unique identifier of a registered user',
-  })
-  userId: string;
-
-  @ApiProperty({
-    description: 'Unique identifier of a restaurant',
-  })
-  restaurantId: string;
 }

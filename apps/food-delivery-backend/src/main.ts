@@ -17,7 +17,7 @@ async function bootstrap() {
   const swaggerConfig = new DocumentBuilder()
     .setTitle('Food Delivery Banckend')
     .setDescription(
-      'Api contains food delivery features',
+      '1. List all restaurants that are open at a certain datetime, 2. List top y restaurants that have more or less than x number of dishes within a price range, ranked alphabetically. More or less (than x) is a parameter that the API allows the consumer to enter. 3. Search for restaurants or dishes by name, ranked by relevance to search term. 4. Process a user purchasing a dish from a restaurant, handling all relevant data changes in an atomic transaction. Do watch out for potential race conditions that can arise from concurrent transactions!',
     )
     .addBearerAuth()
     .setVersion('1.0')
