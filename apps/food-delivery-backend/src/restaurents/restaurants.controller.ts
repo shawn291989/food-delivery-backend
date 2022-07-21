@@ -7,14 +7,19 @@ import {
 } from '@nestjs/common';
 import { RestaurantService } from './restaurants.service';
 import { RestaurantDto } from './dto/getRestaurant.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { CreateRestaurantDto } from './dto/createRestaurant.dto';
-@ApiTags('restaurants')
+import { Restaurant } from './entities/restaurants.entity';
+@ApiTags('Restaurants')
 @Controller({ path: 'restaurants', version: '1' })
 export class RestaurantController {
   constructor(
     private readonly restaurantService: RestaurantService,
   ) { }
+  @ApiOkResponse({
+    description: 'The Restaurant data has been successfully created.',
+    type: Restaurant,
+  })
   @Post()
   async createRestaurants(
     @Body() createRestaurantDto: CreateRestaurantDto
@@ -24,6 +29,10 @@ export class RestaurantController {
     )
     return newRestaurant
   }
+  @ApiOkResponse({
+    description: 'Get List of Restaurants.',
+    type: Restaurant,
+  })
   @Get()
   async getRestaurants(
     @Query() restaurantDto: RestaurantDto
