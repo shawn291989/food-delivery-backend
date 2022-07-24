@@ -20,7 +20,7 @@ describe('TopRestaurantService', () => {
   let topRestaurantRepository;
 
   beforeEach(async () => {
-    const module = await Test.createTestingModule({
+    const module: TestingModule = await Test.createTestingModule({
       providers: [
         TopRestaurantService,
         { provide: TopRestaurantRepository, useFactory: mockTopRestaurantRepository },

@@ -3,11 +3,6 @@ import { RestaurantService } from './restaurants.service';
 import { RestaurantController } from './restaurants.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RestaurantRepository } from './restaurants.repository';
-import { Restaurant } from './entities/restaurants.entity';
-import { MenuRepository } from './menu/menu.repository';
-import { InventoryRepository } from './inventory/inventory.repository';
-//import { MenuRepository } from './menu/menu.repository';
-//import { InventoryRepository } from './inventory/inventory.repository';
 
 @Module({
   imports: [

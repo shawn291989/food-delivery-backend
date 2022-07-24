@@ -1,10 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Menu } from './entities/menu.entity';
 import { MenuRepository } from './menu.repository';
 import { MenuService } from './menu.service';
 
-const mockMenuRepository = () => ({
-  createMenu: jest.fn(),
-})
 const mockRestaurantId = '08ff6a8e-76bd-4f27-850c-b915952d6099'
 const mockMenuDto = {
   menus: []
@@ -12,17 +11,25 @@ const mockMenuDto = {
 
 
 describe('MenuService', () => {
+  const mockMenuRepository = () => ({
+    createMenu: jest.fn(),
+  })
   let menuService: MenuService;
   let menuRepository;
 
   beforeEach(async () => {
-    const module = await Test.createTestingModule({
+    const module: TestingModule = await Test.createTestingModule({
+      //imports: [TypeOrmModule.forRoot(), TypeOrmModule.forFeature([Menu])],
       providers: [
         MenuService,
-        { provide: MenuRepository, useFactory: mockMenuRepository },
+
+        { provide: MenuRepository, useValue: jest.fn() },
       ],
 
-    }).compile();
+    })
+      //.overrideProvider(MenuService)
+      //.useValue(mockMenuRepository)
+      .compile();
 
     menuService = module.get(MenuService);
     menuRepository = module.get(MenuRepository);

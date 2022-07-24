@@ -85,8 +85,7 @@ export class MenuRepository extends Repository<Menu> {
       const existingMenuItem = await this.findOne({
         restaurantId,
         dishName,
-        price,
-        createdBy: 'shawn',
+        price
       });
 
       if (existingMenuItem) {

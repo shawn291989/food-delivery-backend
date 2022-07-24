@@ -1,5 +1,3 @@
-// import './src/boilerplate.polyfill';
-
 import type { TypeOrmModuleOptions } from '@nestjs/typeorm';
 const configs: TypeOrmModuleOptions =
 {

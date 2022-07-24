@@ -33,14 +33,14 @@ export class RestaurantService {
       throw new NotFoundException('No Restaurent found');
     }
 
-    return restaurentData
+    return Promise.resolve(restaurentData)
   }
 
-  async createRestaurants(createRestaurantDto: CreateRestaurantDto) {
+  async createRestaurants(createRestaurantDto: CreateRestaurantDto): Promise<any> {
     const newRestaurant = await this.restaurantRepository.createRestaurants(
       createRestaurantDto
     );
-    return newRestaurant
+    return Promise.resolve(newRestaurant)
   }
 
 
