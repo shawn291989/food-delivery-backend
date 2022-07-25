@@ -36,7 +36,8 @@ export class RestaurantService {
     return Promise.resolve(restaurentData)
   }
 
-  async createRestaurants(createRestaurantDto: CreateRestaurantDto): Promise<any> {
+  async createRestaurants(createRestaurantDto: CreateRestaurantDto):
+    Promise<any> {
     const newRestaurant = await this.restaurantRepository.createRestaurants(
       createRestaurantDto
     );

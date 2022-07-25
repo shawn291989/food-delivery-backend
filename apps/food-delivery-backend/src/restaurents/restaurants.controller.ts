@@ -11,6 +11,7 @@ import { ApiBody, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOpe
 import { CreateRestaurantDto } from './dto/createRestaurant.dto';
 import { Restaurant } from './entities/restaurants.entity';
 import { RestaurantsDto } from './dto/getRestaurants.dto';
+import { BadRequestException } from '@nestjs/common';
 @ApiTags('Restaurants (Create/Get)')
 @Controller({ path: 'restaurants', version: '1' })
 export class RestaurantController {
@@ -27,6 +28,9 @@ export class RestaurantController {
   async createRestaurants(
     @Body() createRestaurantDto: CreateRestaurantDto
   ) {
+    if (createRestaurantDto.restaurantName.length === 0) {
+      throw new BadRequestException('Restaurant name can not be empty !!!')
+    }
     const newRestaurant = await this.restaurantService.createRestaurants(
       createRestaurantDto
     )

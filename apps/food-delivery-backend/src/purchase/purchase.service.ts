@@ -27,6 +27,7 @@ export class PurchaseService {
 
   //This whole block performs a full purchase cycle
   //Atomic transection implemented
+
   async purchase(
     purchaseDto: PurchaseDto
   ) {
@@ -42,7 +43,7 @@ export class PurchaseService {
       purchaseDto.restaurantName
     ) : errorMessage = 'User not found!'
     if (errorMessage) {
-      throw new Error(errorMessage)
+      throw new NotFoundException(errorMessage)
     }
 
     //get dish id from user's provided dish name
@@ -57,7 +58,7 @@ export class PurchaseService {
     ) : errorMessage = 'Item not availabe!'
 
     if (errorMessage) {
-      throw new Error(errorMessage)
+      throw new NotFoundException(errorMessage)
     }
 
     //get restaurant id by dish id from menu table, purpuse is to verify (later) the 
@@ -104,19 +105,19 @@ export class PurchaseService {
       );
     }
 
-    //checking user's given amount is equal to dish's price (If more or less, User gets a message from else clause)
+    //Checking user's given amount is equal to dish's price (If more or less, User gets a message from else clause)
     if (dishPrice === purchaseDto.transactionAmount) {
 
       try {
 
-        //following block updates/adds restaurant's total cash balance as a user purchase a dish and make a payment
+        //Following block updates/adds restaurant's total cash balance as a user purchase a dish and make a payment
 
         const restaurantDATA = await this.restaurantRepository.getRestaurantById(restaurantId);
         const convertedCurrentBalance: number = +restaurantCashBalance;
         const newBalance = convertedCurrentBalance + purchaseDto.transactionAmount;
         restaurantDATA.cashBalance = newBalance;
 
-        //following block updates/deducts user's total cash balance as user purchase an item
+        //Following block updates/deducts user's total cash balance as user purchase an item
 
         const userDATA = await this.userRepository.getUserById(userId);
         const convertedUserBalance: number = +userCashBalance;
