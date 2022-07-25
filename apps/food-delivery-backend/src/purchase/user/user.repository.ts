@@ -49,7 +49,7 @@ export class UserRepository extends Repository<User> {
 
     const existingUser = await this.findOne({
       name: createUserDto.name,
-      cashBalance: createUserDto.cashBalance,
+      // cashBalance: createUserDto.cashBalance,
     });
     if (existingUser) {
       newUser.id = existingUser.id;

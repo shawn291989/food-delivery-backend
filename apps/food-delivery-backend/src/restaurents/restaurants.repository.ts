@@ -56,8 +56,15 @@ export class RestaurantRepository extends Repository<Restaurant> {
       cashBalance: createRestaurantDto.cashBalance,
       updated: moment().utc()
     });
+
+    const existingRestaurant = await this.findOne({
+      restaurantName: createRestaurantDto.restaurantName,
+    });
+    if (existingRestaurant) {
+      newRestaturant.id = existingRestaurant.id;
+    }
     await this.save(newRestaturant);
-    return newRestaturant;
+    return newRestaturant
   }
 
   async getRepoIdByRepoName(repoName: string) {
@@ -68,20 +75,6 @@ export class RestaurantRepository extends Repository<Restaurant> {
       return restaurant.id;
     }
     throw new NotFoundException('Restaurant name, ' + repoName + ', is invalid !!!');
-  }
-
-  async updateRestaurantCashBalance(id: string, currentBalance: number, transectionAmount: number)
-    : Promise<any> {
-    const restaurantValues = await this.getRestaurantById(id);
-    const convertedCurrentBalance: number = +currentBalance;
-    const newBalance = convertedCurrentBalance + transectionAmount;
-    restaurantValues.cashBalance = newBalance;
-    await this.save(restaurantValues);
-    const updatedCashBalance = {
-      uuid: restaurantValues.id,
-      newBalance: restaurantValues.cashBalance
-    };
-    return updatedCashBalance;
   }
 
 

@@ -16,18 +16,6 @@ export class InventoryRepository extends Repository<DishInventory> {
     throw new NotFoundException('Invalid dish for id, ' + dishId + ' !!!');
   }
 
-  async updateDishInventory(dishId: string, inventory: number)
-    : Promise<any> {
-    const inventoryValues = await this.getInventoryById(dishId);
-    const newInventory = inventory - 1;
-    inventoryValues.inventory = newInventory;
-    await this.save(inventoryValues);
-    const updatedInventory = {
-      uuid: inventoryValues.dishId,
-      newInventory: inventoryValues.inventory
-    };
-    return updatedInventory;
-  }
 
   async getInventoryById(dishId: string) {
     const inv = await this.findOne({

@@ -6,6 +6,9 @@ import { UserRepository } from './user/user.repository';
 import { RestaurantRepository } from '../restaurents/restaurants.repository';
 import { MenuRepository } from '../restaurents/menu/menu.repository';
 import { InventoryRepository } from '../restaurents/inventory/inventory.repository';
+import * as moment from 'moment'
+import { NotFoundException } from '@nestjs/common';
+import { getConnection } from 'typeorm';
 
 @Injectable()
 export class PurchaseService {
@@ -22,7 +25,8 @@ export class PurchaseService {
     private inventoryRepository: InventoryRepository,
   ) { }
 
-  //this function performs a full purchase cycle
+  //This whole block performs a full purchase cycle
+  //Atomic transection implemented
   async purchase(
     purchaseDto: PurchaseDto
   ) {
@@ -33,9 +37,13 @@ export class PurchaseService {
     );
 
     //get restaurant unique id by user's provided restaurant name
-    const restaurantId = await this.restaurantRepository.getRepoIdByRepoName(
+    let restaurantId; let errorMessage;
+    (userId) ? restaurantId = await this.restaurantRepository.getRepoIdByRepoName(
       purchaseDto.restaurantName
-    );
+    ) : errorMessage = 'User not found!'
+    if (errorMessage) {
+      throw new Error(errorMessage)
+    }
 
     //get dish id from user's provided dish name
     const dishId = await this.menuRepository.getDishIdByDishName(
@@ -43,17 +51,22 @@ export class PurchaseService {
     );
 
     //get restaurant id by dish id from menu table, purpuse is to verify (later) the item availabe/not availabe on that restaturant
-    const restaurantIdFromMenu = await this.menuRepository.getResIdByDishId(
+    let restaurantIdFromMenuEntity;
+    (dishId) ? restaurantIdFromMenuEntity = await this.menuRepository.getResIdByDishId(
       dishId
-    );
+    ) : errorMessage = 'Item not availabe!'
+
+    if (errorMessage) {
+      throw new Error(errorMessage)
+    }
 
     //get restaurant id by dish id from menu table, purpuse is to verify (later) the 
     const restaurantNameByDishId = await this.restaurantRepository.getRestaurantById(
-      restaurantIdFromMenu[0].menu_restaurantId
+      restaurantIdFromMenuEntity[0].menu_restaurantId
     );
 
     //if id not same, means this menu/dish item is not availabe at this restaurant
-    if (restaurantIdFromMenu[0].menu_restaurantId !== restaurantId) {
+    if (restaurantIdFromMenuEntity[0].menu_restaurantId !== restaurantId) {
       throw new BadRequestException(
         `This item ` + purchaseDto.dishName + ' is not availabe at ' + purchaseDto.restaurantName + ' The item availabe at ' + restaurantNameByDishId.restaurantName,
       );
@@ -74,10 +87,8 @@ export class PurchaseService {
       restaurantId
     );
 
-
     //get user's cash balance by id
     const userCashBalance = await this.userRepository.getCashBalanceByUserId(userId);
-
 
     //check inventory is not empty/0
     if (dishInventory <= 0) {
@@ -98,35 +109,66 @@ export class PurchaseService {
 
       try {
 
-        //this function updates/adds restaurant's total cash balance as a user purchase a dish and make a payment
-        const restaurantCashBalanceUpdate = await this.restaurantRepository.updateRestaurantCashBalance(
-          restaurantId,
-          restaurantCashBalance,
-          purchaseDto.transactionAmount
-        );
+        //following block updates/adds restaurant's total cash balance as a user purchase a dish and make a payment
 
+        const restaurantDATA = await this.restaurantRepository.getRestaurantById(restaurantId);
+        const convertedCurrentBalance: number = +restaurantCashBalance;
+        const newBalance = convertedCurrentBalance + purchaseDto.transactionAmount;
+        restaurantDATA.cashBalance = newBalance;
 
-        //this function updates/deducts user's total cash balance as user purchase an item
-        const userCashBalanceUpdated = await this.userRepository.updateUserCashBalance(
-          userId,
-          userCashBalance,
-          purchaseDto.transactionAmount
-        );
+        //following block updates/deducts user's total cash balance as user purchase an item
 
-        //this function updates inventory number (As user purchase a dish, inventory duducted by 1)
-        const availableInventoryUpdated = await this.inventoryRepository.updateDishInventory(dishId, dishInventory);
+        const userDATA = await this.userRepository.getUserById(userId);
+        const convertedUserBalance: number = +userCashBalance;
+        const amountForTransection = purchaseDto.transactionAmount;
+        if (convertedUserBalance < amountForTransection) {
+          throw new BadRequestException(
+            `Insufficient user balance.`,
+          );
+        }
+        const newUserBalance = convertedUserBalance - amountForTransection;
+        userDATA.cashBalance = newUserBalance;
+
+        //this block updates inventory number (As user purchase a dish, inventory duducted by 1)
+        const inventories = await this.inventoryRepository.getInventoryById(dishId);
+        const newInventory = dishInventory - 1;
+        inventories.inventory = newInventory;
 
         //this function inserts payment history as a successfull payment happend
-        const purchaseData = await this.purchaseRepository.purchase(purchaseDto);
+        const dateTime = moment().utc();
+        Object.assign(purchaseDto, {
+          transactionDate: dateTime
+        });
+
+        const purchaseData = await this.purchaseRepository.create(purchaseDto);
+
+        const connection = getConnection();
+        const queryRunner = connection.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+
+        try {
+          await this.restaurantRepository.save(restaurantDATA);
+          await this.userRepository.save(userDATA);
+          await this.inventoryRepository.save(inventories);
+          await this.purchaseRepository.save(purchaseData);
+          await queryRunner.commitTransaction();
+        }
+        catch (err) {
+          queryRunner.rollbackTransaction();
+        }
+        finally {
+          await queryRunner.release();
+        }
 
         const purchaseResponse = {
           userName: purchaseDto.name,
           dishName: purchaseData.dishName,
-          availabeInventory: availableInventoryUpdated.newInventory,
+          availabeInventory: newInventory,
           restaurantName: purchaseData.restaurantName,
           transactionAmount: purchaseData.transactionAmount,
-          userCashBalance: userCashBalanceUpdated.newBalance,
-          restaurantCashBalance: restaurantCashBalanceUpdate.newBalance,
+          userCashBalance: newUserBalance,
+          restaurantCashBalance: newBalance,
           transactionDate: purchaseData.transactionDate,
         }
         return Promise.resolve(purchaseResponse)
