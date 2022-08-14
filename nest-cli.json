@@ -1,27 +1,4 @@
 {
   "collection": "@nestjs/schematics",
-  "sourceRoot": "apps/food-delivery-backend/src",
-  "monorepo": true,
-  "root": "apps/food-delivery-backend",
-  "compilerOptions": {
-    "webpack": true,
-    "plugins": [
-      "@nestjs/swagger"
-    ],
-    "tsConfigPath": "apps/food-delivery-backend/tsconfig.app.json"
-  },
-  "projects": {
-    "food-delivery-backend": {
-      "type": "application",
-      "root": "apps/food-delivery-backend",
-      "entryFile": "main",
-      "sourceRoot": "apps/food-delivery-backend/src",
-      "compilerOptions": {
-        "plugins": [
-          "@nestjs/swagger"
-        ],
-        "tsConfigPath": "apps/food-delivery-backend/tsconfig.app.json"
-      }
-    }
-  }
+  "sourceRoot": "src"
 }

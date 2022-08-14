@@ -7,9 +7,8 @@ const configs: TypeOrmModuleOptions =
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
-  entities: ['apps/food-delivery-backend/src/**/*.entity{.ts,.js}'],
-  migrations: ['apps/database/migrations/*{.ts,.js}'],
-  //synchronize: true,
+  entities: ['src/**/*.entity{.ts,.js}'],
+  migrations: ['src/database/migrations/*{.ts,.js}'],
 };
 
 module.exports = configs;
