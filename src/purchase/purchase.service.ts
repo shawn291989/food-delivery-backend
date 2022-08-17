@@ -103,7 +103,7 @@ export class PurchaseService {
     }
 
     //Checking user's given amount is equal to dish's price (If more or less, User gets a message from else clause)
-    if (dishPrice === purchaseDto.transactionAmount) {
+    if (dishPrice === purchaseDto.unitPrice) {
 
       try {
 
@@ -111,7 +111,7 @@ export class PurchaseService {
 
         const restaurantDATA = await this.restaurantRepository.getRestaurantById(restaurantId);
         const convertedCurrentBalance: number = +restaurantCashBalance;
-        const totalTransectionAmount = purchaseDto.transactionAmount * purchaseDto.quantity;
+        const totalTransectionAmount = purchaseDto.unitPrice * purchaseDto.quantity;
         const newBalance = convertedCurrentBalance + totalTransectionAmount;
         restaurantDATA.cashBalance = newBalance;
 
@@ -119,11 +119,14 @@ export class PurchaseService {
 
         const userDATA = await this.userRepository.getUserById(userId);
         const convertedUserSpentAmount: number = +userSpentAmount;
-        const transectionAmount = purchaseDto.transactionAmount * purchaseDto.quantity;
+        const transectionAmount = purchaseDto.unitPrice * purchaseDto.quantity;
         const updatedSpentAmount = convertedUserSpentAmount + transectionAmount;
         userDATA.spentAmount = updatedSpentAmount;
 
         //this block updates inventory number (As user purchase a dish, inventory is duducted)
+        if (dishInventory < purchaseDto.quantity) {
+          throw new BadRequestException('Item not availabe!S');
+        }
         const inventories = await this.inventoryRepository.getInventoryById(dishId);
         const newInventory = dishInventory - purchaseDto.quantity;
         inventories.inventory = newInventory;
@@ -151,9 +154,6 @@ export class PurchaseService {
         catch (err) {
           queryRunner.rollbackTransaction();
         }
-        finally {
-          await queryRunner.release();
-        }
 
         const purchaseResponse = {
           restaurantName: purchaseData.restaurantName,
@@ -174,7 +174,7 @@ export class PurchaseService {
       }
     } else {
       throw new NotFoundException(
-        `The price of this item is, ` + dishPrice + ' please provide the amount instead of ' + purchaseDto.transactionAmount,
+        `The price of this item is, ` + dishPrice + ' please provide the amount instead of ' + purchaseDto.unitPrice,
       );
     }
   }

@@ -48,7 +48,7 @@ export class PurchaseDto {
   })
   @IsDefined()
   @IsNumber()
-  transactionAmount: number;
+  unitPrice: number;
 
   @Exclude()
   userId: string;
