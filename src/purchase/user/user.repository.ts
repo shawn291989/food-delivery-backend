@@ -9,7 +9,7 @@ import { CreateUserResponseDto } from './dto/create-user-response.dto';
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
 
-  async getUserIdByUserName(userName: string) {
+  async getUserIdByUserName(userName: string): Promise<string> {
     const user = await this.findOne({
       where: {
         name: userName
@@ -21,19 +21,19 @@ export class UserRepository extends Repository<User> {
     throw new NotFoundException('User, ' + userName + ', is not registered !!!');
   }
 
-  async getCashBalanceByUserId(id: string) {
+  async getSpendAmountByUserId(id: string): Promise<number> {
     const userInfo = await this.findOne({
       where: {
         id
       }
     });
     if (userInfo) {
-      return userInfo.cashBalance;
+      return userInfo.spentAmount;
     }
     throw new NotFoundException('User with id, ' + id + ', does not exist !!!');
   }
 
-  async getUserById(id: string) {
+  async getUserById(id: string): Promise<User> {
     const res = await this.findOne({
       where: {
         id
@@ -47,10 +47,11 @@ export class UserRepository extends Repository<User> {
     return res;
   }
 
-  async createUser(createUserDto: CreateUserDto) {
+  async createUser(createUserDto: CreateUserDto): Promise<User> {
     const newUser = this.create({
       name: createUserDto.name,
-      cashBalance: createUserDto.cashBalance,
+      spentAmount: createUserDto.spentAmount,
+      address: createUserDto.address,
       updated: moment().utc(),
     });
 
@@ -66,21 +67,17 @@ export class UserRepository extends Repository<User> {
     return newUser
   }
 
-  async updateUserCashBalance(id: string, currentBalance: number, transectionAmount: number)
+  async updateUserExpances(id: string, currentBalance: number, transectionAmount: number)
     : Promise<CreateUserResponseDto> {
     const userValues = await this.getUserById(id);
     const convertedCurrentBalance: number = +currentBalance;
-    if (convertedCurrentBalance < transectionAmount) {
-      throw new BadRequestException(
-        `Transection amount can not be bigger than current balance`,
-      );
-    }
-    const newBalance = convertedCurrentBalance - transectionAmount;
-    userValues.cashBalance = newBalance;
+    const newAmount = convertedCurrentBalance + transectionAmount;
+    userValues.spentAmount = newAmount;
     await this.save(userValues);
     const updatedCashBalance = {
       uuid: userValues.id,
-      newBalance: userValues.cashBalance
+      totalSpentAmount: userValues.spentAmount,
+      address: userValues.address
     };
     return updatedCashBalance;
   }

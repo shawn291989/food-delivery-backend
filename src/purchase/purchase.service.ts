@@ -32,15 +32,17 @@ export class PurchaseService {
   async purchase(
     purchaseDto: PurchaseDto
   ): Promise<PurchaseResponseDto> {
-
+    if (purchaseDto.quantity <= 0) {
+      throw new BadRequestException('Order quantity should be at least 1')
+    }
     //get user unique id by name
     const userId = await this.userRepository.getUserIdByUserName(
-      purchaseDto.name
+      purchaseDto.customerName
     );
 
     //get restaurant unique id by user's provided restaurant name
     let restaurantId; let errorMessage;
-    (userId) ? restaurantId = await this.restaurantRepository.getRepoIdByRepoName(
+    (userId) ? restaurantId = await this.restaurantRepository.getRetaurantIdByName(
       purchaseDto.restaurantName
     ) : errorMessage = 'User not found!'
     if (errorMessage) {
@@ -48,8 +50,9 @@ export class PurchaseService {
     }
 
     //get dish id from user's provided dish name
-    const dishId = await this.menuRepository.getDishIdByDishName(
-      purchaseDto.dishName
+    const dishId = await this.menuRepository.getDishIdByDishNameAndResId(
+      purchaseDto.dishName,
+      restaurantId
     );
 
     //get restaurant id by dish id from menu table, purpuse is to verify (later) the item availabe/not availabe on that restaturant
@@ -89,20 +92,13 @@ export class PurchaseService {
       restaurantId
     );
 
-    //get user's cash balance by id
-    const userCashBalance = await this.userRepository.getCashBalanceByUserId(userId);
+    //get user's total expences by id
+    const userSpentAmount = await this.userRepository.getSpendAmountByUserId(userId);
 
     //check inventory is not empty/0
     if (dishInventory <= 0) {
       throw new NotFoundException(
         `This item ` + purchaseDto.dishName + ' is not availabe !!!',
-      );
-    }
-
-    //check user has sufficient balance
-    if (dishPrice > userCashBalance) {
-      throw new NotFoundException(
-        `User has no sufficient balance, current balance ` + userCashBalance + ' required Balance ' + dishPrice,
       );
     }
 
@@ -115,25 +111,21 @@ export class PurchaseService {
 
         const restaurantDATA = await this.restaurantRepository.getRestaurantById(restaurantId);
         const convertedCurrentBalance: number = +restaurantCashBalance;
-        const newBalance = convertedCurrentBalance + purchaseDto.transactionAmount;
+        const totalTransectionAmount = purchaseDto.transactionAmount * purchaseDto.quantity;
+        const newBalance = convertedCurrentBalance + totalTransectionAmount;
         restaurantDATA.cashBalance = newBalance;
 
-        //Following block updates/deducts user's total cash balance as user purchase an item
+        //Following block addes user's total expanse as user purchase an item
 
         const userDATA = await this.userRepository.getUserById(userId);
-        const convertedUserBalance: number = +userCashBalance;
-        const amountForTransection = purchaseDto.transactionAmount;
-        if (convertedUserBalance < amountForTransection) {
-          throw new NotFoundException(
-            `Insufficient user balance.`,
-          );
-        }
-        const newUserBalance = convertedUserBalance - amountForTransection;
-        userDATA.cashBalance = newUserBalance;
+        const convertedUserSpentAmount: number = +userSpentAmount;
+        const transectionAmount = purchaseDto.transactionAmount * purchaseDto.quantity;
+        const updatedSpentAmount = convertedUserSpentAmount + transectionAmount;
+        userDATA.spentAmount = updatedSpentAmount;
 
-        //this block updates inventory number (As user purchase a dish, inventory duducted by 1)
+        //this block updates inventory number (As user purchase a dish, inventory is duducted)
         const inventories = await this.inventoryRepository.getInventoryById(dishId);
-        const newInventory = dishInventory - 1;
+        const newInventory = dishInventory - purchaseDto.quantity;
         inventories.inventory = newInventory;
 
         //this function inserts payment history as a successfull payment happend
@@ -142,7 +134,7 @@ export class PurchaseService {
           transactionDate: dateTime
         });
 
-        const purchaseData = await this.purchaseRepository.create(purchaseDto);
+        const purchaseData = this.purchaseRepository.create(purchaseDto);
 
         const connection = getConnection();
         const queryRunner = connection.createQueryRunner();
@@ -164,15 +156,18 @@ export class PurchaseService {
         }
 
         const purchaseResponse = {
-          userName: purchaseDto.name,
-          dishName: purchaseData.dishName,
-          availabeInventory: newInventory,
           restaurantName: purchaseData.restaurantName,
-          transactionAmount: purchaseData.transactionAmount,
+          customerName: purchaseDto.customerName,
+          dishName: purchaseDto.dishName,
+          purchaseQuantity: purchaseDto.quantity,
+          unitPrice: purchaseData.transactionAmount,
+          totalPrice: transectionAmount,
+          availabeInventory: newInventory,
           restaurantCashBalance: newBalance,
+          userTotalSpentAmount: updatedSpentAmount,
           transactionDate: purchaseData.transactionDate,
         }
-        return Promise.resolve(purchaseResponse)
+        return purchaseResponse
 
       } catch (err) {
         return Promise.reject(err);

@@ -1,15 +1,17 @@
 import {
   Controller,
   Post,
-  Body
+  Body,
+  HttpCode,
+  HttpStatus,
+  Res
 } from '@nestjs/common';
 import { PurchaseService } from './purchase.service';
 import { PurchaseDto } from './dto/purchase.dto';
-import { Response } from '@nestjs/common';
 import { ApiBody, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreatePurchaseDto } from './dto/create-purchase.dto';
-import { PaymentHistory } from './entities/paymentHistory.entity';
 import { PurchaseResponseDto } from './dto/purchase.response.dto';
+import { Response } from 'express';
 @ApiTags('Purchase')
 @Controller({ path: 'purchase', version: '1' })
 export class PurchaseController {
@@ -23,10 +25,10 @@ export class PurchaseController {
   @ApiOperation({ description: 'This API performs, Process a user purchasing a dish from a restaurant, handling all relevant data changes in an atomic transaction.' })
   @ApiBody({ type: CreatePurchaseDto })
   @Post()
-  async purchases(
-    @Body() purchaseDto: PurchaseDto
-  ): Promise<PurchaseResponseDto> {
-    return await this.purchaseService.purchase(
+  @HttpCode(HttpStatus.OK)
+  purchases(
+    @Body() purchaseDto: PurchaseDto): Promise<PurchaseResponseDto> {
+    return this.purchaseService.purchase(
       purchaseDto
     )
   }

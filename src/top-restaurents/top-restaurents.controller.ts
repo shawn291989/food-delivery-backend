@@ -25,10 +25,10 @@ export class TopRestaurantController {
   })
   // @ApiQuery({ type: TopRestaurantDto })
   @Get()
-  async getTopRestaurants(
+  getTopRestaurants(
     @Query() topRestaurantDto: TopRestaurantDto,
   ): Promise<TopRestaurantResponseDto> {
-    return await this.topRestaurantService.getTopRestaurant(
+    return this.topRestaurantService.getTopRestaurant(
       topRestaurantDto
     );
   }

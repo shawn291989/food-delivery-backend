@@ -1,4 +1,4 @@
-import { EntityRepository, Repository, getConnection, getRepository } from 'typeorm';
+import { EntityRepository, Repository, getConnection, getRepository, Like } from 'typeorm';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Menu } from './entities/menu.entity';
 import { CreateMenuDto } from './dto/create-menu.dto';
@@ -8,17 +8,15 @@ import { DishInventory } from '../entities/dish-inventory.entity';
 @EntityRepository(Menu)
 export class MenuRepository extends Repository<Menu> {
 
-  async getDishIdByDishName(dishName: string) {
+  async getDishIdByDishNameAndResId(dishName: string, restaurantId: string) {
     const dish = await this.findOne({
-      where: {
-        dishName
-      }
+      where: { dishName: Like(`%${dishName}%`), restaurantId }
+
     });
     if (dish) {
       return dish.id;
     }
     throw new NotFoundException('Dish name, ' + dishName + ', is invalid !!!');
-
   }
   async createInventory(dishId: string, inventory: number) {
     await getConnection()
@@ -70,7 +68,7 @@ export class MenuRepository extends Repository<Menu> {
     const menusCreated = [];
     let menuItem = {};
     for (let i = 0; i < menus.length; i++) {
-      const dishName = menus[i]['dishName'];
+      const dishName = menus[i]['dishName'].toLowerCase();
       const price = menus[i]['price'];
       const inventory = menus[i]['inventory'];
       if (!inventory) {

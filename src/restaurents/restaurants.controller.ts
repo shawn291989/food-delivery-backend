@@ -25,16 +25,15 @@ export class RestaurantController {
   @ApiOperation({ description: 'This API performs to populate data into database' })
   @ApiBody({ type: CreateRestaurantDto })
   @Post()
-  async createRestaurants(
+  createRestaurants(
     @Body() createRestaurantDto: CreateRestaurantDto
   ): Promise<Restaurant> {
     if (createRestaurantDto.restaurantName.length === 0) {
       throw new BadRequestException('Restaurant name can not be empty !!!')
     }
-    const newRestaurant = await this.restaurantService.createRestaurants(
+    return this.restaurantService.createRestaurants(
       createRestaurantDto
     )
-    return newRestaurant
   }
 
   @ApiOkResponse({
@@ -47,13 +46,12 @@ export class RestaurantController {
   })
   @ApiQuery({ type: RestaurantDto })
   @Get()
-  async getRestaurants(
+  getRestaurants(
     @Query() restaurantDto: RestaurantDto
   ): Promise<RestaurantResponseDto> {
-    const result = await this.restaurantService.getRestaurants(
+    return this.restaurantService.getRestaurants(
       restaurantDto
     )
-    return result;
   }
 
 }

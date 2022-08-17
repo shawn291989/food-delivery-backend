@@ -1,15 +1,17 @@
-import { EntityRepository, Repository, getRepository } from 'typeorm';
+import { EntityRepository, Repository, getRepository, Like } from 'typeorm';
 import * as moment from 'moment'
 import { Restaurant } from './entities/restaurants.entity';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, HttpCode, HttpStatus, Injectable, NotFoundException, ParseUUIDPipe } from '@nestjs/common';
 import { RestaurantDto } from './dto/getRestaurant.dto';
 import { CreateRestaurantDto } from './dto/createRestaurant.dto';
+import { RestaurantResponseDto } from './dto/getRestaurant-response.dto';
+import { MESSAGES } from '@nestjs/core/constants';
 
 @Injectable()
 @EntityRepository(Restaurant)
 export class RestaurantRepository extends Repository<Restaurant> {
 
-  async getRestaurants(restaurantDto: RestaurantDto) {
+  async getRestaurants(restaurantDto: RestaurantDto): Promise<RestaurantResponseDto> {
     const qb = getRepository(Restaurant)
       .createQueryBuilder('restaurant')
       .leftJoinAndSelect('restaurant.openingHours', 'openingHours')
@@ -64,26 +66,26 @@ export class RestaurantRepository extends Repository<Restaurant> {
       }
     });
     if (existingRestaurant) {
-      newRestaturant.id = existingRestaurant.id;
+      //newRestaturant.id = existingRestaurant.id;
+      throw new BadRequestException('Restaurant ' + createRestaurantDto.restaurantName + ' Already Exist, Id: ' + existingRestaurant.id)
     }
     await this.save(newRestaturant);
     return newRestaturant
   }
 
-  async getRepoIdByRepoName(repoName: string) {
+  async getRetaurantIdByName(restaurantName: string): Promise<string> {
     const restaurant = await this.findOne({
-      where: {
-        restaurantName: repoName
-      }
+      where:
+        `"restaurantName" ILIKE '${restaurantName}'`
     });
     if (restaurant) {
       return restaurant.id;
     }
-    throw new NotFoundException('Restaurant name, ' + repoName + ', is invalid !!!');
+    throw new NotFoundException('Restaurant name, ' + restaurantName + ', is invalid !!!');
   }
 
 
-  async getRestaurantById(id: string) {
+  async getRestaurantById(id: string): Promise<Restaurant> {
     const res = await this.findOne({
       where: {
         id
@@ -97,7 +99,7 @@ export class RestaurantRepository extends Repository<Restaurant> {
     return res;
   }
 
-  async getCashBalanceById(id: string) {
+  async getCashBalanceById(id: string): Promise<number> {
     const restaurantData = await this.findOne({
       where: {
         id

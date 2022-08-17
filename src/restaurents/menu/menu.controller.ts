@@ -16,9 +16,9 @@ export class MenuController {
     type: CreateMenuDto,
   })
   @ApiBody({ type: CreateMenuDto })
-  create(
+  async create(
     @Body() createMenuDto: {},
     @Query('restaurantId', ParseUUIDPipe) restaurantId: string,): Promise<Menu> {
-    return this.menuService.create(restaurantId, createMenuDto);
+    return await this.menuService.create(restaurantId, createMenuDto);
   }
 }

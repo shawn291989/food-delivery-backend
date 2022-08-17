@@ -8,7 +8,7 @@ export class PurchaseResponseDto {
     example: 'Mr. xyz',
     description: 'User name/ Customer name!',
   })
-  userName: string;
+  customerName: string;
 
   @ApiProperty({
     type: String,
@@ -16,6 +16,13 @@ export class PurchaseResponseDto {
     description: 'Name of the dish, which a user wants to purchase',
   })
   dishName: string;
+
+  @ApiProperty({
+    type: Number,
+    example: 1,
+    description: 'Quantity of order!',
+  })
+  purchaseQuantity: number;
 
   @ApiProperty({
     type: Number,
@@ -35,9 +42,9 @@ export class PurchaseResponseDto {
   @ApiProperty({
     type: Number,
     example: 10.00,
-    description: 'The transection amount',
+    description: 'Unit price of Item',
   })
-  transactionAmount: number;
+  unitPrice: number;
 
   @ApiProperty({
     type: Number,

@@ -20,10 +20,12 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./apps/food-delivery-backend/test/jest-e2e.json",
     "typeorm": "ts-node node_modules/typeorm/cli.js  -f ormconfig",
-    "migration:generate": "yarn run typeorm migration:generate -d apps/database/migrations -n ",
-    "migration:create": "yarn run typeorm migration:create -d apps/database/migrations -n ",
+    "migration:generate": "yarn run typeorm migration:generate -d src/database/migrations -n ",
+    "migration:create": "yarn run typeorm migration:create -d src/database/migrations -n ",
     "migration:revert": "yarn run typeorm migration:revert",
-    "migration:run": "yarn run typeorm migration:run"
+    "migration:run": "yarn run typeorm migration:run",
+    "seed:config": "ts-node node_modules/typeorm-seeding/dist/cli.js config",
+    "seed:run": "ts-node node_modules/typeorm-seeding/dist/cli.js seed"
   },
   "dependencies": {
     "@aws-sdk/client-sqs": "^3.47.0",

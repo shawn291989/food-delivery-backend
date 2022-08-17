@@ -6,6 +6,7 @@ import {
   DeleteDateColumn,
   Entity,
   OneToMany,
+  ManyToOne,
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { Menu } from '../menu/entities/menu.entity';
@@ -42,4 +43,5 @@ export class Restaurant {
 
   @OneToMany(() => PaymentHistory, (paymentHistory) => paymentHistory.restaurant)
   paymentHistories: PaymentHistory[];
+
 }

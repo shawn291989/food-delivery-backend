@@ -1,5 +1,7 @@
 
 import { ApiProperty } from '@nestjs/swagger';
+import { Exclude } from 'class-transformer';
+import { IsDefined, IsNumber, IsString } from 'class-validator';
 
 export class PurchaseDto {
 
@@ -8,13 +10,26 @@ export class PurchaseDto {
     example: 'Mr. xyz',
     description: 'User name/ Customer name!',
   })
-  name: string;
+  @IsDefined()
+  @IsString()
+  customerName: string;
+
+  @ApiProperty({
+    type: Number,
+    example: 1,
+    description: 'Quantity of order!',
+  })
+  @IsDefined()
+  @IsNumber()
+  quantity: number;
 
   @ApiProperty({
     type: String,
     example: 'Watercress',
     description: 'Name of the dish, which a user wants to purchase',
   })
+  @IsDefined()
+  @IsString()
   dishName: string;
 
   @ApiProperty({
@@ -22,6 +37,8 @@ export class PurchaseDto {
     example: 'restaurant',
     description: 'Name of the restaurant, From which a user wants to purchase',
   })
+  @IsDefined()
+  @IsString()
   restaurantName: string;
 
   @ApiProperty({
@@ -29,15 +46,13 @@ export class PurchaseDto {
     example: 10.00,
     description: 'The transection amount',
   })
+  @IsDefined()
+  @IsNumber()
   transactionAmount: number;
 
-  @ApiProperty({
-    description: 'Unique identifier of a registered user',
-  })
+  @Exclude()
   userId: string;
 
-  @ApiProperty({
-    description: 'Unique identifier of a restaurant',
-  })
+  @Exclude()
   restaurantId: string;
 }

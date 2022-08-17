@@ -3,11 +3,12 @@ import { EntityRepository, Repository, getConnection, getRepository } from 'type
 import { Restaurant } from '../restaurents/entities/restaurants.entity';
 import { NotFoundException } from '@nestjs/common';
 import { TopRestaurantDto } from './dto/top-restaurant.dto';
+import { TopRestaurantResponseDto } from './dto/top-restaurant-response.dto';
 
 @EntityRepository(Restaurant)
 export class TopRestaurantRepository extends Repository<Restaurant> {
 
-  async getTopRestaurants(restaurantDto: TopRestaurantDto) {
+  async getTopRestaurants(restaurantDto: TopRestaurantDto): Promise<TopRestaurantResponseDto> {
     const qb = getRepository(Restaurant)
       .createQueryBuilder('restaurant')
       .leftJoinAndSelect('restaurant.menus', 'menus')

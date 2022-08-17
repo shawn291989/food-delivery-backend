@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsUUID } from 'class-validator';
+import { IsNumber, IsString, IsUUID } from 'class-validator';
 
 export class CreateUserResponseDto {
 
@@ -14,9 +14,16 @@ export class CreateUserResponseDto {
   @ApiProperty({
     type: Number,
     example: 3500,
-    description: 'Cash balance of user',
+    description: 'Total spent amount of user',
   })
   @IsNumber()
-  newBalance: number;
+  totalSpentAmount: number;
 
+  @ApiProperty({
+    type: String,
+    example: 'User Address',
+    description: 'Address of user',
+  })
+  @IsString()
+  address: string;
 }

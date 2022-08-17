@@ -3,10 +3,11 @@ import { BadRequestException } from '@nestjs/common';
 import { OpeningHours } from './entities/openingHours.entity';
 import { CreateOpeningHoursDto } from './dto/create-opening-hour.dto';
 import * as moment from 'moment'
+import { OpeningHoursResponseDto } from './dto/create-opening-hour-response.dto';
 
 @EntityRepository(OpeningHours)
 export class OpeningHoursRepository extends Repository<OpeningHours> {
-  async createOpeningHours(restaurantId: string, createOpeningHoursDto: CreateOpeningHoursDto) {
+  async createOpeningHours(restaurantId: string, createOpeningHoursDto: CreateOpeningHoursDto): Promise<OpeningHoursResponseDto> {
     if (!restaurantId) {
       throw new BadRequestException(
         `Please provide restaurantId in query string`

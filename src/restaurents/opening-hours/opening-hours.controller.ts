@@ -14,9 +14,9 @@ export class OpeningHoursController {
     description: 'The record has been successfully created.',
     type: OpeningHoursResponseDto,
   })
-  create(
+  async create(
     @Body() createOpeningHoursDto: CreateOpeningHoursDto,
     @Query('restaurantId', new ParseUUIDPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })) restaurantId: string,): Promise<OpeningHoursResponseDto> {
-    return this.openingHoursService.create(restaurantId, createOpeningHoursDto);
+    return await this.openingHoursService.create(restaurantId, createOpeningHoursDto);
   }
 }
